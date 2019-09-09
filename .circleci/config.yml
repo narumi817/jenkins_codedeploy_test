@@ -70,5 +70,5 @@ jobs:
               aws deploy create-deployment \
                   --application-name circleci-deploy-test \
                   --deployment-group-name circleci-deploy-test-g \
-                  --s3-location bucket="circleci-deploy-test", budleType="zip", eTag=`aws s3api head-object --bucket circleci-deploy-test --key scala.helloworld/$ARTIFACT_BUILD | jq .ETag`, key="$ARTIFACT_BUILD" \
+                  --s3-location bucket="circleci-deploy-test", budleType="zip", key="scala.helloworld/$ARTIFACT_BUILD" \
                   --region ap-northeast-1
