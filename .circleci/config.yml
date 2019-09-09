@@ -26,16 +26,16 @@ jobs:
     steps:
       - run: echo 'export ARTIFACT_BUILD=$CIRCLE_PROJECT_REPONAME-$CIRCLE_BUILD_NUM.zip' >> $BASH_ENV
       - run:
-        name: sbt バイナリを取得
-        command: |
-          apt update && apt install -y curl
-          curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb
-          dpkg -i sbt-$SBT_VERSION.deb
-          rm sbt-$SBT_VERSION.deb
-          apt-get update
-          apt-get install -y sbt python-pip git
-          pip install awscli
-          apt-get clean && apt-get autoclean
+          name: sbt バイナリを取得
+          command: |
+            apt update && apt install -y curl
+            curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb
+            dpkg -i sbt-$SBT_VERSION.deb
+            rm sbt-$SBT_VERSION.deb
+            apt-get update
+            apt-get install -y sbt python-pip git
+            pip install awscli
+            apt-get clean && apt-get autoclean
 
       - checkout
       # Download and cache dependencies
@@ -44,13 +44,13 @@ jobs:
 
       # compile
       - run:
-        name: sbt compile
-        command: cat /dev/null | sbt clean assembly dist
+          name: sbt compile
+          command: cat /dev/null | sbt clean assembly dist
       - store_artifacts:
-        path: target/universal/jenkins_codedeploy_test.zip
-        destination: jenkins_codedeploy_test
+          path: target/universal/jenkins_codedeploy_test.zip
+          destination: jenkins_codedeploy_test
 
       - save_cache:
-        paths:
-          - ~/.m2
-        key: v1-dependencies--{{ checksum "build.sbt" }}
+          paths:
+            - ~/.m2
+          key: v1-dependencies--{{ checksum "build.sbt" }}
