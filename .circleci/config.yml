@@ -28,14 +28,14 @@ jobs:
       - run:
           name: sbt バイナリを取得
           command: |
-            sudo apt update && apt install -y curl
+            sudo apt update && sudo apt install -y curl
             sudo curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb
             sudo dpkg -i sbt-$SBT_VERSION.deb
             sudo rm sbt-$SBT_VERSION.deb
             sudo apt-get update
             sudo apt-get install -y sbt python-pip git
-            pip install awscli
-            sudo apt-get clean && apt-get autoclean
+            sudo pip install awscli
+            sudo apt-get clean && sudo apt-get autoclean
 
       - checkout
       # Download and cache dependencies
