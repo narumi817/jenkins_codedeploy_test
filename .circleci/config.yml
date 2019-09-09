@@ -60,5 +60,5 @@ jobs:
 
       - deploy:
           command: |
-              mv target/universal/jenkins_codedeploy_test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
+              sudo mv target/universal/jenkins_codedeploy_test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
               aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://jenkins-codedeploy-plugin-test/scala.helloworld/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
