@@ -46,7 +46,7 @@ jobs:
       - run:
         name: sbt compile
         command: cat /dev/null | sbt clean assembly dist
-      -store_artifacts:
+      - store_artifacts:
         path: target/universal/jenkins_codedeploy_test.zip
         destination: jenkins_codedeploy_test
 
