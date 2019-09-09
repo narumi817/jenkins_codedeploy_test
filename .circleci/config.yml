@@ -24,7 +24,7 @@ jobs:
       SBT_VERSION: 1.0.4
 
     steps:
-      - run: echo 'export ARTIFACT_BUILD=$CIRCLE_PROJECT_REPONAME-$CIRCLE_BUILD_NUM.zip' >> $BASH_ENV
+      - run: echo 'export ARTIFACT_BUILD=circleci-deploy-test-$CIRCLE_BUILD_NUM.zip' >> $BASH_ENV
       - run:
           name: sbt バイナリを取得
           command: |
