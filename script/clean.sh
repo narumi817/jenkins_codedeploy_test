@@ -1,0 +1,1 @@
+rm /tmp/HelloWorld-assembly-1.0.jar

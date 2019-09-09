@@ -3,8 +3,3 @@ name := "HelloWorld"
 version := "1.0"
 
 scalaVersion := "2.11.0"
-
-lazy val root = (project in file(".")).enablePlugins(JavaAppPackaging)
-
-//rename zip file created from `dist` command
-packageName in Universal := "jenkins_codedeploy_test"

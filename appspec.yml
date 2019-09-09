@@ -1,0 +1,12 @@
+version: 0.0
+os: linux
+files:
+  - source: jenkins_codedeploy_test/target/scala-2.11/HelloWorld-assembly-1.0.jar
+    destination: /tmp
+
+hooks:
+  BeforeInstall:
+    - location: script/clean.sh
+      runas: root
+  ApplicationStart:
+    - location: script/start.sh
