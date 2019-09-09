@@ -47,10 +47,10 @@ jobs:
           name: sbt compile (jarファイル作成)
           command: cat /dev/null | sbt clean assembly
       - run:
-          name: sbt compile (zipファイル作成)
-          command: cat /dev/null | sbt clean update dist
+          name: zipファイル作成
+          command: cat /dev/null | zip -r jenkins_codedeploy_test ../jenkins_codedeploy_test
       - store_artifacts:
-          path: target/universal/jenkins_codedeploy_test.zip
+          path: jenkins_codedeploy_test.zip
           destination: jenkins_codedeploy_test
 
       - save_cache:
@@ -59,6 +59,7 @@ jobs:
           key: v1-dependencies--{{ checksum "build.sbt" }}
 
       - deploy:
+          name: Deploy to S3
           command: |
-              sudo mv target/universal/jenkins_codedeploy_test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
+              sudo mv jenkins_codedeploy_test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
               aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://jenkins-codedeploy-plugin-test/scala.helloworld/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
