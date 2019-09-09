@@ -48,7 +48,7 @@ jobs:
           command: cat /dev/null | sbt clean assembly
       - run:
           name: zipファイル作成
-          command: cat /dev/null | zip -r circleci-deploy-test ../circleci-deploy-test
+          command: cat /dev/null | zip -r circleci-deploy-test ../jenkins_codedeploy_test
       - store_artifacts:
           path: circleci-deploy-test.zip
           destination: circleci-deploy-test
