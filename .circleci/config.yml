@@ -48,10 +48,10 @@ jobs:
           command: cat /dev/null | sbt clean assembly
       - run:
           name: zipファイル作成
-          command: cat /dev/null | zip -r jenkins_codedeploy_test ../jenkins_codedeploy_test
+          command: cat /dev/null | zip -r circleci-deploy-test ../circleci-deploy-test
       - store_artifacts:
-          path: jenkins_codedeploy_test.zip
-          destination: jenkins_codedeploy_test
+          path: circleci-deploy-test.zip
+          destination: circleci-deploy-test
 
       - save_cache:
           paths:
@@ -61,5 +61,14 @@ jobs:
       - deploy:
           name: Deploy to S3
           command: |
-              sudo mv jenkins_codedeploy_test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
-              aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://jenkins-codedeploy-plugin-test/scala.helloworld/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
+              sudo mv circleci-deploy-test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
+              aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://circleci-deploy-test/scala.helloworld/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
+
+      - deploy:
+          name: Deploy to EC2
+          commant: |
+              aws deploy create-deployment \
+                  --application-name circleci-deploy-test \
+                  --deployment-group-name circleci-deploy-test-g \
+                  --s3-location bucket="circleci-deploy-test", budleType="zip", eTag=`aws s3api head-object --bucket circleci-deploy-test --key scala.helloworld/$ARTIFACT_BUILD | jq .ETag`, key="$ARTIFACT_BUILD" \
+                  --region ap-northeast-1
