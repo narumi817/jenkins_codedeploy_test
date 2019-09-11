@@ -141,16 +141,22 @@ workflows:
                 - staging
                 - dev
       - deploy-prod:
+          requires:
+            - build
           filters:
             branches:
               only:
                 - master
       - deploy-stage:
+          requires:
+            - build
           filters:
             branches:
               only:
                 - staging
       - deploy-dev:
+          requires:
+            - build
           filters:
             branches:
               only:
