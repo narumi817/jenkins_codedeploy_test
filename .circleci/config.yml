@@ -32,10 +32,6 @@ jobs:
             sudo curl -L -o sbt-$SBT_VERSION.deb https://dl.bintray.com/sbt/debian/sbt-$SBT_VERSION.deb
             sudo dpkg -i sbt-$SBT_VERSION.deb
             sudo rm sbt-$SBT_VERSION.deb
-            sudo apt-get update
-            sudo apt-get install -y sbt python-pip git
-            sudo pip install awscli
-            sudo apt-get clean && sudo apt-get autoclean
 
       - checkout
       # Download and cache dependencies
@@ -60,20 +56,79 @@ jobs:
             - ~/.m2
           key: v1-dependencies--{{ checksum "build.sbt" }}
 
-      - deploy:
-          name: Deploy to S3
+  deploy-prod:
+    docker:
+      - image: ubuntu:18.04
+
+    working_directory: /tmp/jenkins_codedeploy_test
+
+    steps:
+      - run: echo 'export ARTIFACT_BUILD=circleci-deploy-test-$CIRCLE_BUILD_NUM.zip' >> $BASH_ENV
+      - run:
+          name: awscli install
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y sbt python-pip git
+            sudo pip install awscli
+            sudo apt-get clean && sudo apt-get autoclean
+
+      - run:
+          name: Upload to S3 (prod)
           command: |
               sudo mv circleci-deploy-test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
               aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://circleci-deploy-test/scala.helloworld/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
 
       - deploy:
-          name: Deploy to EC2
+          name: Deploy to EC2 (prod)
           command: |
               aws deploy create-deployment \
                   --application-name circleci-deploy-test \
                   --deployment-group-name circleci-deploy-test-g \
                   --s3-location bucket="circleci-deploy-test",bundleType="zip",key="scala.helloworld/$ARTIFACT_BUILD" \
                   --region ap-northeast-1
+  deploy-staging:
+    docker:
+      - image: ubuntu:18.04
+
+    working_directory: /tmp/jenkins_codedeploy_test
+
+    steps:
+      - run: echo 'export ARTIFACT_BUILD=circleci-deploy-test-$CIRCLE_BUILD_NUM.zip' >> $BASH_ENV
+      - run:
+          name: awscli install
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y sbt python-pip git
+            sudo pip install awscli
+            sudo apt-get clean && sudo apt-get autoclean
+
+      - run:
+          name: Upload to S3 (prod)
+          command: |
+              sudo mv circleci-deploy-test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
+              aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://circleci-deploy-test/scala.helloworld.staging/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
+  deploy-dev:
+    docker:
+      - image: ubuntu:18.04
+
+    working_directory: /tmp/jenkins_codedeploy_test
+
+    steps:
+      - run: echo 'export ARTIFACT_BUILD=circleci-deploy-test-$CIRCLE_BUILD_NUM.zip' >> $BASH_ENV
+      - run:
+          name: awscli install
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y sbt python-pip git
+            sudo pip install awscli
+            sudo apt-get clean && sudo apt-get autoclean
+
+      - run:
+          name: Upload to S3 (prod)
+          command: |
+              sudo mv circleci-deploy-test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
+              aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://circleci-deploy-test/scala.helloworld.dev/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
+
 workflows:
   version: 2
   build-deploy:
@@ -83,3 +138,20 @@ workflows:
             branches:
               only: 
                 - master
+                - staging
+                - dev
+      - deploy-prod:
+          filters:
+            branches:
+              only:
+                - master
+      - deploy-stage:
+          filters:
+            branches:
+              only:
+                - staging
+      - deploy-dev:
+          filters:
+            branches:
+              only:
+                - dev
