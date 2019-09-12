@@ -128,7 +128,7 @@ jobs:
           command: |
               sudo mv circleci-deploy-test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
               aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://circleci-deploy-test/scala.helloworld.staging/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
-  build-deploy-staging:
+  build-deploy-dev:
     docker:
       - image: circleci/openjdk:8-jdk
 
