@@ -70,7 +70,7 @@ jobs:
             apt update
             apt install -y sudo
             sudo apt-get update
-            sudo apt-get install -y sbt python-pip git
+            sudo apt-get install -y python-pip git
             sudo pip install awscli
             sudo apt-get clean && sudo apt-get autoclean
 
@@ -102,7 +102,7 @@ jobs:
             apt update
             apt install -y sudo
             sudo apt-get update
-            sudo apt-get install -y sbt python-pip git
+            sudo apt-get install -y python-pip git
             sudo pip install awscli
             sudo apt-get clean && sudo apt-get autoclean
 
@@ -125,7 +125,7 @@ jobs:
             apt update
             apt install -y sudo
             sudo apt-get update
-            sudo apt-get install -y sbt python-pip git
+            sudo apt-get install -y python-pip git
             sudo pip install awscli
             sudo apt-get clean && sudo apt-get autoclean
 
