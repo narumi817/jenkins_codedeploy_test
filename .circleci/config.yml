@@ -56,6 +56,11 @@ jobs:
             - ~/.m2
           key: v1-dependencies--{{ checksum "build.sbt" }}
 
+      - run:
+          name: move artifact
+          command: |
+              sudo mv circleci-deploy-test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
+
   deploy-prod:
     docker:
       - image: ubuntu:18.04
@@ -77,7 +82,6 @@ jobs:
       - run:
           name: Upload to S3 (prod)
           command: |
-              sudo mv circleci-deploy-test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
               aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://circleci-deploy-test/scala.helloworld/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
 
       - deploy:
@@ -109,7 +113,6 @@ jobs:
       - run:
           name: Upload to S3 (prod)
           command: |
-              sudo mv circleci-deploy-test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
               aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://circleci-deploy-test/scala.helloworld.staging/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
   deploy-dev:
     docker:
@@ -132,7 +135,6 @@ jobs:
       - run:
           name: Upload to S3 (prod)
           command: |
-              sudo mv circleci-deploy-test.zip $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD
               aws s3 cp $CIRCLE_ARTIFACTS/$ARTIFACT_BUILD s3://circleci-deploy-test/scala.helloworld.dev/ --metadata {\"git_sha1\":\"$CIRCLE_SHA1\"}
 
 workflows:
